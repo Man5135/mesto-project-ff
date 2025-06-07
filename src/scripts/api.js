@@ -12,8 +12,6 @@ const config = {
   }
 };
 
-res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`)
-
 export const getUserInfo = () => {
   return fetch(`${config.baseUrl}/users/me`, {
     method: 'GET',

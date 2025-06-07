@@ -4,6 +4,15 @@ import { createCard, removeCard, showLike } from './card.js';
 import { enableValidation, clearValidation } from './validation.js';
 import { getUserInfo, getInitialCards, updateUserInfo, addNewCard, deleteCard, putLike, removeLike, updateAvatar } from './api.js';
 
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+};
+
 const cardTemplate = document.querySelector('#card-template').content.querySelector('.card');
 const cardsList = document.querySelector('.places__list'); 
 
@@ -39,13 +48,7 @@ editProfileButton.addEventListener('click',() => {
   openModal(editProfilePopup);
   nameInput.value = profileName.textContent;
   jobInput.value = profileDescription.textContent;
-  clearValidation(editProfilePopup, {
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__error_visible'
-  });
+  clearValidation(editProfilePopup, validationConfig);
 });
 
 createCardButton.addEventListener('click',() => {
@@ -73,7 +76,6 @@ const handleFormSubmitProfile = (evt) => {
 
 editProfileForm.addEventListener('submit', handleFormSubmitProfile);
 
-
 const handleFormSubmitCard = (evt) => {
   evt.preventDefault();
   const saveCardButton = createCardPopup.querySelector('.popup__button');
@@ -82,13 +84,7 @@ const handleFormSubmitCard = (evt) => {
     cardsList.prepend(createCard({cardName: newCard.name, cardLink: newCard.link, cardLikes: newCard.likes, cardId: newCard._id, removeCard, deleteHandler, showLike, putLike, removeLike, openImagePopup, cardTemplate}));
     closeModal(createCardPopup);
     cardForm.reset();
-    clearValidation(createCardPopup, {
-    inputSelector: '.popup__input',
-    submitButtonSelector: '.popup__button',
-    inactiveButtonClass: 'popup__button_disabled',
-    inputErrorClass: 'popup__input_type_error',
-    errorClass: 'popup__error_visible'
-    });
+    clearValidation(createCardPopup, validationConfig);
   })
   .catch(err => console.log(err))
   .finally(() => {
@@ -154,7 +150,6 @@ allPopups.forEach((popup) => {
   });
 });
 
-
 Promise.all([getUserInfo(), getInitialCards()]).then(([userInfo, cards]) => {
   avatar.style.backgroundImage = `url(${userInfo.avatar})`;
   profileName.textContent = userInfo.name;
@@ -164,12 +159,4 @@ Promise.all([getUserInfo(), getInitialCards()]).then(([userInfo, cards]) => {
   })
 }).catch(err => console.log(err));
 
-
-enableValidation({
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__error_visible'
-}); 
+enableValidation(validationConfig);
